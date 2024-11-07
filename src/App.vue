@@ -1,22 +1,12 @@
-<script>
-import {ref} from "vue";
-export default {
-  setup() {
-    const count = ref(1);
+<script setup>
+import { ref } from "vue";
+const count = ref(1);
 
-    function increase() {
-      count.value++;
-    }
-    function decrease() {
-      count.value--;
-    }
-
-    return {
-      count,
-      increase,
-      decrease
-    };
-  },
+function increase() {
+  count.value++;
+};
+function decrease() {
+  count.value--;
 };
 </script>
 
