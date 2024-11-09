@@ -1,51 +1,66 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const showForm = ref(false);
+const newMemo = ref("");
+const memos = ref([]);
+const error = ref("");
+
+function addMemo() {
+  if (newMemo.value === "") {
+    error.value = "Please enter a memo";
+    return;
+  }
+  memos.value.push({
+    id: Date.now(),
+    content: newMemo.value,
+    date: new Date().toLocaleString("en-us"),
+    backgroundColor: getRandomColor(),
+  });
+  newMemo.value = "";
+  showForm.value = false;
+}
+
+function getRandomColor() {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
 </script>
 
 <template>
   <main>
-    <div @click="showForm = true" class="container">
+    <div class="container">
       <header>
         <h1 class="header-title">memo</h1>
-        <button class="header-button">+</button>
+        <button @click="showForm = true" class="header-button">+</button>
       </header>
       <div class="card-container">
-        <div class="card">
+        <div
+          v-for="(memo, index) in memos"
+          :key="index"
+          class="card"
+          :style="{ backgroundColor: memo.backgroundColor }"
+        >
           <p class="card-content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae
-            atque vero autem magnam minus doloribus soluta necessitatibus, eos,
-            molestias corporis, numquam iure. Iste, quasi repellat accusamus hic
-            perferendis maxime excepturi?
+            {{ memo.content }}
           </p>
-          <p>12/12/12</p>
-        </div>
-        <div class="card">
-          <p class="card-content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae
-            atque vero autem magnam minus doloribus soluta necessitatibus, eos,
-            molestias corporis, numquam iure. Iste, quasi repellat accusamus hic
-            perferendis maxime excepturi?
-          </p>
-          <p>12/12/12</p>
-        </div>
-        <div class="card">
-          <p class="card-content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae
-            atque vero autem magnam minus doloribus soluta necessitatibus, eos,
-            molestias corporis, numquam iure. Iste, quasi repellat accusamus hic
-            perferendis maxime excepturi?
-          </p>
-          <p>12/12/12</p>
+          <p>{{ memo.date }}</p>
         </div>
       </div>
     </div>
     <div v-if="showForm" class="form-overlay">
       <div class="form-modal">
-        <button @click="showForm = false" class="form-close-btn">&times;</button>
-        <textarea name="memo" id="memo" cols="30" rows="10"></textarea>
-        <button class="form-save-btn">save</button>
+        <button @click="showForm = false" class="form-close-btn">
+          &times;
+        </button>
+        <p v-if="error" class="form-error">{{ error }}</p>
+        <textarea
+          v-model="newMemo"
+          name="memo"
+          id="memo"
+          cols="30"
+          rows="10"
+        ></textarea>
+        <button @click="addMemo" class="form-save-btn">save</button>
       </div>
     </div>
   </main>
@@ -145,7 +160,7 @@ header .header-button {
   outline: none;
 }
 
-.form-close-btn{
+.form-close-btn {
   position: absolute;
   top: 0;
   right: 0;
@@ -155,5 +170,8 @@ header .header-button {
   border: none;
   font-size: 25px;
   cursor: pointer;
+}
+.form-error{
+  color: red;
 }
 </style>
